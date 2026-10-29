@@ -1,0 +1,25 @@
+{
+  "categories": [
+    "AI 系统与检索",
+    "增长与商业化",
+    "工程实现",
+    "体验与界面",
+    "内容与运营",
+    "研究与方法",
+    "学术产出",
+    "研究协作",
+    "长期观察"
+  ],
+  "catalogue": [
+    { "name": "AI 系统与检索", "sectionPage": 1, "count": 3 },
+    { "name": "增长与商业化", "sectionPage": 4, "count": 3 },
+    { "name": "工程实现", "sectionPage": 7, "count": 3 },
+    { "name": "体验与界面", "sectionPage": 10, "count": 2 },
+    { "name": "内容与运营", "sectionPage": 12, "count": 3 },
+    { "name": "研究与方法", "sectionPage": 15, "count": 1 },
+    { "name": "学术产出", "sectionPage": 16, "count": 1 },
+    { "name": "研究协作", "sectionPage": 17, "count": 1 },
+    { "name": "长期观察", "sectionPage": 18, "count": 1 }
+  ],
+  "note": "9 个分类名不得改动（content-b 的新增条目依赖这九个名字）。catalogue 里写的是 18 条档案的定稿目标（count 合计 18，sectionPage 按分类在图版页序中首次出现的位置编号）；构建时 tools/lib/categories.mjs 会按 tools/archives-d 的真实页序重算并以计算结果为准 —— 数据没到位时不编造页码。"
+}

@@ -1,0 +1,235 @@
+{
+  "intro": [
+    {
+      "label": "BORV",
+      "subtitle": "人工智能 × 商务拓展",
+      "title": "黄博弈 · BORV",
+      "date": "AI × BUSINESS DEVELOPMENT",
+      "summary": "人工智能专业，商务拓展方向，把线索、数据与模型串成可量化的增长",
+      "details": [
+        "本科在读，人工智能专业，2027.06 毕业",
+        "专业方向落在自然语言处理与深度学习",
+        "中文可写作与汇报；英文可读技术文档与接口规范",
+        "求职方向：AI 产品与增长运营，2027 届校招"
+      ],
+      "image": "portfolio/portrait.jpg",
+      "project": null,
+      "meta": ["AI", "BD", "2027 届"]
+    },
+    {
+      "label": "EDUCATION",
+      "subtitle": "本科 · 在读",
+      "title": "福州外语外贸学院",
+      "date": "2027.06",
+      "summary": "人工智能专业本科，主修深度学习、自然语言处理与网络虚拟化技术",
+      "details": [
+        "主修深度学习、自然语言处理、数据结构与算法、网络虚拟化技术",
+        "社团联合会干事，从零组建 15 人跨专业团队",
+        "年承接校级活动十余场，最高单场覆盖 2000 人次以上",
+        "在校获评校级优秀干部"
+      ],
+      "image": "portfolio/page-10.jpg",
+      "project": null
+    },
+    {
+      "label": "CONTACT",
+      "subtitle": "联系方式",
+      "title": "写邮件比打电话更快",
+      "date": "2027 届校招",
+      "summary": "邮箱与 GitHub 常年在线，工作日当天回复",
+      "details": [
+        "邮箱：huangboryac@gmail.com",
+        "GitHub：github.com/Boryac",
+        "站点：Boryac.github.io",
+        "协作方式：可远程，也可按机会迁移"
+      ],
+      "image": "portfolio/page-02.jpg",
+      "project": null,
+      "showPoints": true
+    },
+    {
+      "label": "SKILLS",
+      "subtitle": "能力与工具",
+      "title": "技能与工具",
+      "date": "2022—2026",
+      "summary": "五条线并行：检索与模型、增长与商业化、工程、数据评测、语言",
+      "details": [
+        "AI 与检索：向量召回加 Cross-Encoder 重排，问答精准度约九成",
+        "增长与商业化：商户 BD、RFM 分层、LTV / CAC 与 SOP 横向复制",
+        "前端与工程：FastAPI、Vue 3、Electron、TypeScript，能把系统独立跑到上线",
+        "数据与评测：Python / SQL 做业务侧分析，固定问题集回归与工单离线对齐",
+        "运营工具：CRM、飞书 / 钉钉 / 企业微信、SEO / SEM 与私域社群",
+        "语言：中文写作与汇报，英文可读技术文档与接口规范，邮件往来可用"
+      ],
+      "image": "portfolio/page-03.jpg",
+      "project": null,
+      "showPoints": true,
+      "meta": ["检索", "增长", "工程", "数据"]
+    }
+  ],
+
+  "internships": [
+    {
+      "label": "KULU BD",
+      "subtitle": "BD 协同运营",
+      "title": "广州酷旅旅行社有限公司",
+      "date": "2025.05—2025.09",
+      "summary": "B 端旅游门户的流程与客户运营，旺季把订单时效从 6 小时压到 2 小时",
+      "details": [
+        "把订单链路拆成识别、锁资源、录系统三段并行，取消上下游的等待依赖",
+        "按 RFM 把 B 端客户分层，权益与触达策略随层级变化，替代粗颗粒度群发",
+        "用 RICE 给需求排序，配日清看板走完收集、评审、交付、验效四步",
+        "旺季订单处理时效 6 小时压到 2 小时，GMV 超额完成 27%"
+      ],
+      "image": "portfolio/page-05.jpg",
+      "project": "X-005",
+      "showPoints": true,
+      "meta": ["在线旅游", "流程改造"]
+    },
+    {
+      "label": "CEWE SAAS",
+      "subtitle": "商务拓展专员",
+      "title": "中企动力科技股份有限公司",
+      "date": "2025.04—2025.05",
+      "summary": "面向年 GMV 500 万至 1000 万的 B2B 企业推 SaaS 方案，首月 KPI 完成 120%",
+      "details": [
+        "面向年 GMV 500 万至 1000 万的 B2B 制造与服务企业，推 Pass 与 SaaS 方案",
+        "在 CRM 里重建行业标签，从千余条线索中筛出高意向池",
+        "输出官网、小程序、社媒三端流量闭环，配合 SEO 与 SEM 投放",
+        "首月 KPI 完成 120% 以上，触达至签约的周期从 20 天缩到 12 天"
+      ],
+      "image": "portfolio/page-06.jpg",
+      "project": "X-006",
+      "showPoints": true,
+      "meta": ["SaaS", "线索分层"]
+    },
+    {
+      "label": "LUOSHAN BD",
+      "subtitle": "本地生活 BD · 新媒体运营",
+      "title": "河南罗山文旅局",
+      "date": "2023.05—2023.09",
+      "summary": "县域文旅的商户拓展与内容运营，三个月做出 48 万线下消费 GMV",
+      "details": [
+        "三周内拜访 30 余家餐饮与民宿，设计分账与流量反哺机制，推动 20 多家入驻",
+        "策划「寻访罗山老字号」内容 IP，用 KOL 探店短视频加限时秒杀拉动转化",
+        "按消费数据调整核销点位，关键商户客流提升 40%，客诉率控制在 1.2%",
+        "三个月线下消费 GMV 48 万以上，沉淀 6 个 500 人规模的私域社群"
+      ],
+      "image": "portfolio/page-04.jpg",
+      "project": null,
+      "showPoints": true,
+      "meta": ["本地生活", "私域"]
+    }
+  ],
+
+  "competitions": [
+    {
+      "label": "HONOR",
+      "subtitle": "校级荣誉",
+      "title": "校级优秀干部",
+      "date": "在校期间",
+      "summary": "在校获评校级优秀干部，同期承担社团联合会的组织工作",
+      "details": [
+        "从零组建 15 人跨专业团队，成员跨三个以上专业",
+        "年承接校级活动十余场，最高单场覆盖 2000 人次以上",
+        "活动结束后留物料与话术模板给下一届，减少交接损耗"
+      ],
+      "image": "portfolio/page-09.jpg",
+      "project": null,
+      "meta": ["校园", "组织"]
+    }
+  ],
+
+  "exhibitions": [
+    {
+      "label": "LAUNCH",
+      "subtitle": "线上发布",
+      "title": "borv. 作品集站点上线",
+      "date": "2026.10",
+      "summary": "把简历做成可交互站点，首屏是一张绕挂孔摆动的 3D 工牌",
+      "details": [
+        "首屏用自写的阻尼摆与滞后振子驱动，没有引入刚体引擎",
+        "固定步长积分，物理休眠后停止渲染，静止时不空转",
+        "WebGL 不可用时回落到 HTML 工牌，正文始终是语义 HTML",
+        "尊重系统的减少动态效果，键盘可完成摆动、翻面与重播"
+      ],
+      "image": "portfolio/page-07.jpg",
+      "project": "X-007",
+      "showPoints": true,
+      "meta": ["前端", "动效"]
+    },
+    {
+      "label": "ON CAMPUS",
+      "subtitle": "校内上线",
+      "title": "校园二手交易平台开放运行",
+      "date": "2022",
+      "summary": "把校内二手交易从班级群搬进站内，累计成交 600 单以上",
+      "details": [
+        "用 Vue 与 FastAPI 搭信息发布与担保交易流程，教材与自行车是主要类目",
+        "先在两个学院试运行，改完发布流程再向全校开放",
+        "开学与毕业两季各做一轮完整运营，地推与线上推广交替进行",
+        "担保流程把确认收货与放款绑在一起，描述不符的纠纷明显减少"
+      ],
+      "image": "portfolio/page-08.jpg",
+      "project": "X-008",
+      "showPoints": true,
+      "meta": ["交易流程", "校园"]
+    },
+    {
+      "label": "SERIAL",
+      "subtitle": "线上发布",
+      "title": "职场内容账号持续更新",
+      "date": "2024",
+      "summary": "把实习里踩过的问题写成图文，累计发布 60 篇以上",
+      "details": [
+        "选题集中在简历修改、面试复盘与 AI 工具实测三类",
+        "更新节奏跟着招聘季走，用评论区的追问反向定题",
+        "每篇固定场景、做法、清单三段，被转发时单段也读得懂",
+        "单篇最高阅读 3.2 万"
+      ],
+      "image": "portfolio/page-11.jpg",
+      "project": "X-011",
+      "showPoints": true,
+      "meta": ["内容", "运营"]
+    }
+  ],
+
+  "academic": [
+    {
+      "label": "EVAL SET",
+      "subtitle": "技术报告",
+      "title": "AI 智能应答系统离线评测",
+      "date": "2025.06—2025.09",
+      "summary": "用三个月历史工单做离线对齐，把阈值与语料调到运营认可的区间",
+      "details": [
+        "把三个月工单导出后按问题类型聚类，八成咨询集中在退款、改期与入园凭证",
+        "用固定问题集逐轮回归，命中与误答分开记录，判断改语料还是改参数",
+        "先单平台试跑两周核对误答，再把同一套服务接到第二个平台",
+        "未命中的咨询自动回流待补队列，第二天进入补录"
+      ],
+      "image": "portfolio/page-01.jpg",
+      "project": "X-001",
+      "showPoints": true,
+      "meta": ["离线评测", "检索"]
+    },
+    {
+      "label": "BASELINE",
+      "subtitle": "研究笔记",
+      "title": "县域商户运营基线盘点",
+      "date": "2023",
+      "summary": "走访 80 余家餐饮与民宿，形成一份可横向对比的运营基线",
+      "details": [
+        "盘点表按基础信息、线上表现、核销能力三块建字段，缺项留空不估填",
+        "把商户压成三类画像：有内容无核销、有核销无内容、两者都缺",
+        "每类只配一套整改动作，先改一处，避免建议过多被直接放弃",
+        "方法后来复制到另外两个县域，成为月度常规动作"
+      ],
+      "image": "portfolio/page-12.jpg",
+      "project": "X-012",
+      "showPoints": true,
+      "meta": ["田野走访", "基线口径"]
+    }
+  ],
+
+  "patents": []
+}
