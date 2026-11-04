@@ -5,7 +5,7 @@
 有真实截图的条目就把截图放进图版右侧，没有的就用排版图 —— 不伪造截图。
 
 输出尺寸对齐参考站：page 2000×708；atlas 4000×(177×rows)、8 列、rows = ceil(N/8)。
-N 一律取 `tools/archives-d/*.json` 的**实际条数**（现为 18 条：X-001…X-018），
+N 一律取 `tools/archives-d/*.json` 的**实际条数**（现为 19 条：X-001…X-019），
 图版张数、atlas 行数、PDF 页数三者必须相等 —— 见 main() 末尾的断言。
 """
 import json

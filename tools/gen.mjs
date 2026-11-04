@@ -22,6 +22,7 @@ import { existsSync, mkdirSync, readFileSync, readdirSync, statSync, writeFileSy
 import path from "node:path";
 
 import { chromium } from "./playwright.mjs";
+import { archiveText as archiveTextShared, checkNumbers as checkNumbersShared } from "./numbers.mjs";
 
 const ROOT = path.resolve(process.cwd());
 const CHECK_ONLY = process.argv.includes("--check");
@@ -33,60 +34,16 @@ const CANVAS = DATA.canvas ?? { width: 2000, height: 1250 };
 const fails = [];
 const rows = [];
 
-/* ── 数字出处校验 ─────────────────────────────────────────────────────────── */
-const norm = (s) => String(s).replace(/[\s,，]/g, "");
+/* ── 数字出处校验（实现见 numbers.mjs，与 shell.mjs 共用同一把尺子） ─────────── */
 const ID = /^X-\d{3}$/;
-
-function archiveText(id) {
-  const file = path.join(ROOT, "tools/archives-d", `${id}.json`);
-  if (!existsSync(file)) return null;
-  const j = JSON.parse(readFileSync(file, "utf8"));
-  return norm(
-    [j.title, j.en, j.abstract, j.focus, j.methods, ...(j.findings ?? []), ...(j.deliverables ?? []), j.contentNote ?? ""]
-      .filter(Boolean)
-      .join("\n"),
-  );
-}
-
-/** 收集一张图里出现的所有数字 token（含百分比、千分位、小数、带单位）。 */
-function numberTokens(node, out = []) {
-  if (typeof node === "string") {
-    /*
-     * 时钟时间（09:30 / 18:00）不算档案数据 —— 它是操作日志的时间戳，
-     * 不是「项目指标」。先把 `H:MM` 整段抹掉再抽数字，避免把 09/30 当成两个指标。
-     */
-    const scrubbed = node.replace(/\b\d{1,2}:\d{2}\b/g, " TIME ");
-    for (const m of scrubbed.match(/\d[\d,.]*/g) ?? []) out.push(m.replace(/,/g, ""));
-    return out;
-  }
-  if (Array.isArray(node)) {
-    for (const v of node) numberTokens(v, out);
-    return out;
-  }
-  if (node && typeof node === "object") {
-    for (const [k, v] of Object.entries(node)) {
-      if (k === "file" || k === "tpl" || k === "mode" || k.startsWith("__")) continue;
-      numberTokens(v, out);
-    }
-  }
-  return out;
-}
-
-/** 模板里允许出现、但与档案数字无关的纯序号（如「批次 A」不含数字，这里留空）。 */
 const ORDINAL_ALLOW = new Set();
 
+function archiveText(id) {
+  return archiveTextShared(ROOT, id);
+}
+
 function checkNumbers(shot, text, label) {
-  if (!text) {
-    fails.push(`${label}: 找不到档案 JSON（tools/archives-d/${shot.__id}.json）`);
-    return;
-  }
-  const seen = new Set();
-  for (const tok of numberTokens(shot)) {
-    const t = tok.replace(/\.$/, "");
-    if (seen.has(t) || ORDINAL_ALLOW.has(t)) continue;
-    seen.add(t);
-    if (!text.includes(t)) fails.push(`${label}: 数字 ${t} 在档案正文里找不到出处`);
-  }
+  checkNumbersShared(shot, text, label, fails, ORDINAL_ALLOW);
 }
 
 /* ── 渲染 ─────────────────────────────────────────────────────────────────── */
@@ -103,11 +60,20 @@ const browser = CHECK_ONLY || items.length === 0 ? null : await chromium.launch(
 for (const item of items) {
   const text = archiveText(item.id);
   const dirName = item.id.toLowerCase().replace("-", "");
-  if (item.shots.length !== 2) fails.push(`${item.id}: 期望 2 张图，实得 ${item.shots.length}`);
+  /*
+   * 不再硬编码「每条 2 张」：01 号图归 shell.mjs 的档案在本文件只登记 1 张。
+   * 这里只断言「登记了就得对得上」，总数由下面的目录检查兜住（每条恰好 2 张 jpg）。
+   */
+  if (item.shots.length < 1 || item.shots.length > 2) fails.push(`${item.id}: 登记 ${item.shots.length} 张，应为 1–2 张`);
 
-  for (const [i, shot] of item.shots.entries()) {
-    const expect = `media/${dirName}/${String(i + 1).padStart(2, "0")}.jpg`;
-    if (shot.file !== expect) fails.push(`${item.id}: 文件名 ${shot.file} ≠ 约定 ${expect}`);
+  for (const [, shot] of item.shots.entries()) {
+    /*
+     * 文件名位置不再等于数组下标：01 号若由 shell.mjs 负责，本文件第一条登记的是 02。
+     * 改成「必须是 media/<id>/01|02.jpg」的约束，具体是哪一张由 data.json 登记决定。
+     */
+    if (!/^media\/x\d{3}\/0[12]\.jpg$/.test(shot.file)) {
+      fails.push(`${item.id}: 文件名 ${shot.file} 不符合 media/<id>/01|02.jpg`);
+    }
     if (!existsSync(path.join(ROOT, "tools/media/tpl", `${shot.tpl}.html`))) {
       fails.push(`${item.id}: 模板 ${shot.tpl}.html 不存在`);
       continue;
@@ -167,7 +133,8 @@ if (!CHECK_ONLY) {
       continue;
     }
     const n = readdirSync(dir).filter((f) => /\.jpe?g$/i.test(f));
-    if (n.length !== 2) fails.push(`media/${dirName}: 期望 2 张 jpg，实得 ${n.length}`);
+    // 01 号可能由 shell.mjs 产出，所以目录里仍应恰好 2 张（01 + 02）
+    if (n.length !== 2) fails.push(`media/${dirName}: 期望 2 张 jpg（01 可能来自 shell.mjs），实得 ${n.length}`);
   }
 }
 

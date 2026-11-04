@@ -772,28 +772,28 @@ function buildJobs(frames, sites) {
   const jobs = [];
   const abs = (p) => path.resolve(p);
 
-  // ---- X-002 弈康 ------------------------------------------------
+  // ---- X-003 弈康 ------------------------------------------------
   if (want("x002")) {
     need(S.ykPcHome, "PC官网首页-1.jpg");
     need(S.ykWxChat, "微信小程序-对话页.jpg");
     need(S.ykAdmin, "exe管理界面页-医生数据后台.jpg");
     need(S.ykExeChat, "exe界面页-对话.jpg");
     jobs.push({
-      key: "X-002/01",
+      key: "X-003/01",
       out: path.join(MEDIA, "x002", "01.jpg"),
       backdrop: { src: abs(S.ykPcHome), zoom: 1.16, blur: 40, darken: 0.6, tint: [10, 9, 8] },
       layers: [{ type: "panel", src: abs(S.ykPcHome), maxw: 1820, maxh: 1080, radius: 16, shadow: 0.4, hairline: [255, 255, 255, 26] }],
       source: "截图素材/PC官网首页-1.jpg（1661×836，弈康 PC 官网首屏真机截图）",
     });
     jobs.push({
-      key: "X-002/02",
+      key: "X-003/02",
       out: path.join(MEDIA, "x002", "02.jpg"),
       backdrop: { src: abs(S.ykWxChat), zoom: 1.6, blur: 48, darken: 0.72, tint: [10, 12, 14] },
       layers: [{ type: "panel", src: abs(S.ykWxChat), maxw: 700, maxh: 1080, radius: 34, shadow: 0.5, hairline: [255, 255, 255, 30] }],
       source: "截图素材/微信小程序-对话页.jpg（310×689，微信小程序对话真机截图）",
     });
     jobs.push({
-      key: "X-002/03",
+      key: "X-003/03",
       out: path.join(MEDIA, "x002", "03.jpg"),
       backdrop: { src: abs(S.ykAdmin), zoom: 1.16, blur: 40, darken: 0.6, tint: [10, 10, 12] },
       layers: [{
@@ -804,7 +804,7 @@ function buildJobs(frames, sites) {
       redacted: true,
     });
     jobs.push({
-      key: "X-002/04",
+      key: "X-003/04",
       out: path.join(MEDIA, "x002", "04.jpg"),
       backdrop: { src: abs(S.ykExeChat), zoom: 1.16, blur: 40, darken: 0.6, tint: [10, 10, 12] },
       layers: [{
@@ -816,17 +816,17 @@ function buildJobs(frames, sites) {
     });
   }
 
-  // ---- X-007 borv. 作品集站点 -----------------------------------
+  // ---- X-008 borv. 作品集站点 -----------------------------------
   // 关于「改版前后」：..\Project_Habitat_Codex_Kit\artifacts\diag\compare-final.png 是唯一真实的
   // 「参考站 vs 本仓」对照图（图内自带 PSNR 21.26 dB / Pearson 0.937 / 直方图交集 0.962 / 平均亮度差 3.86%，
-  // 与 X-007、X-014 文案同源）。但它的左幅是第三方站点（KIRAHOOK 字标 + kirahook.github.io），
+  // 与 X-008、X-015 文案同源）。但它的左幅是第三方站点（KIRAHOOK 字标 + kirahook.github.io），
   // 与 media/README「图上不得出现第三方 logo」冲突，所以 02 改用「线上 × 本仓」两张自采抓屏，
   // 指标由本脚本现算；若评审要求改用那张对照图，把 sites.live 换成 compare-final.png 即可。
   if (want("x007") && sites) {
     need(sites.live, "线上首屏抓屏");
     need(sites.local, "本仓首屏抓屏");
     jobs.push({
-      key: "X-007/01",
+      key: "X-008/01",
       out: path.join(MEDIA, "x007", "01.jpg"),
       bg: PAPER,
       layers: [{ type: "exact", src: abs(sites.live), zoom: 1.0 }],
@@ -840,7 +840,7 @@ function buildJobs(frames, sites) {
         ? "判定：两侧是同一套构建，差异只在字体栅格与抗锯齿，不是改版差异"
         : "判定：两侧存在实质差异（标题栏/版式/内容不同）";
     jobs.push({
-      key: "X-007/02",
+      key: "X-008/02",
       out: path.join(MEDIA, "x007", "02.jpg"),
       bg: PAPER,
       layers: [
@@ -867,19 +867,19 @@ function buildJobs(frames, sites) {
     });
   }
 
-  // ---- X-009 应答系统运营后台 -----------------------------------
+  // ---- X-010 应答系统运营后台 -----------------------------------
   if (want("x009")) {
     need(S.ykOps, "ops-dashboard.webp");
     need(S.ykOps2, "网站工作台3.jpg");
     jobs.push({
-      key: "X-009/01",
+      key: "X-010/01",
       out: path.join(MEDIA, "x009", "01.jpg"),
       backdrop: { src: abs(S.ykOps), zoom: 1.16, blur: 40, darken: 0.6, tint: [8, 10, 14] },
       layers: [{ type: "panel", src: abs(S.ykOps), maxw: 1820, maxh: 1060, radius: 14, shadow: 0.4, hairline: [255, 255, 255, 26] }],
       source: "Project_Habitat_Codex_Kit/…/yikang-health-guide/ops-dashboard.webp（1600×802，运维工作台流量总览）",
     });
     jobs.push({
-      key: "X-009/02",
+      key: "X-010/02",
       out: path.join(MEDIA, "x009", "02.jpg"),
       backdrop: { src: abs(S.ykOps2), zoom: 1.16, blur: 40, darken: 0.6, tint: [8, 10, 14] },
       layers: [{ type: "panel", src: abs(S.ykOps2), maxw: 1820, maxh: 1060, radius: 14, shadow: 0.4, hairline: [255, 255, 255, 26] }],
@@ -887,20 +887,20 @@ function buildJobs(frames, sites) {
     });
   }
 
-  // ---- X-013 AutoBookForge --------------------------------------
+  // ---- X-014 AutoBookForge --------------------------------------
   if (want("x013") && sites) {
     need(sites.abf, "AutoBookForge 抓屏");
     need(S.abfCoverA, "爱有天意_cover.png");
     need(S.abfCoverB, "沉重与卑微_cover.png");
     jobs.push({
-      key: "X-013/01",
+      key: "X-014/01",
       out: path.join(MEDIA, "x013", "01.jpg"),
       backdrop: { src: abs(sites.abf), zoom: 1.16, blur: 40, darken: 0.62, tint: [10, 10, 10] },
       layers: [{ type: "panel", src: abs(sites.abf), maxw: 1840, maxh: 1090, radius: 14, shadow: 0.42, hairline: [255, 255, 255, 24] }],
       source: "..\\AutoBookForge\\web\\index.html（本机静态服务抓屏 1600×1000）",
     });
     jobs.push({
-      key: "X-013/02",
+      key: "X-014/02",
       out: path.join(MEDIA, "x013", "02.jpg"),
       backdrop: { src: abs(S.abfCoverA), zoom: 1.2, blur: 44, darken: 0.62, tint: [12, 10, 8] },
       layers: [{
@@ -911,7 +911,7 @@ function buildJobs(frames, sites) {
     });
   }
 
-  // ---- X-017 / X-018 影像抽帧 -----------------------------------
+  // ---- X-018 / X-019 影像抽帧 -----------------------------------
   for (const f of FRAMES) {
     if (!want(f.id)) continue;
     f.times.forEach((t, i) => {

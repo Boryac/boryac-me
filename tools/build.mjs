@@ -10,7 +10,8 @@
  * 幂等：每次从 `.src/` 重建；重复执行输出一致。
  * 失败即红：替换未命中就退出非 0。
  */
-import { copyFileSync, existsSync, readFileSync, readdirSync, writeFileSync } from "node:fs";
+import { copyFileSync, existsSync, readFileSync, readdirSync, rmSync, writeFileSync } from "node:fs";
+import { createHash } from "node:crypto";
 import path from "node:path";
 import { buildCatalogue, unknownCategories } from "./lib/categories.mjs";
 import { loadArchives } from "./lib/load-archives.mjs";
@@ -96,6 +97,25 @@ js = patchPlateVideo(js, must);
 
 /* 数据集：JSON.parse('…') 载荷换成我们自己的档案 */
 const RECORDS = loadArchives(ROOT);
+
+/* 检索弹层的行加一个稳定锚点：`data-archive-row="X-00N"`。
+ * 目的只是让自动化能定位到某一行（原来只有 data-result=数组下标，
+ * 数据一改就失效），不影响任何交互与样式。 */
+js = must(
+  js,
+  '<button class="result-row" data-result="${t}">',
+  '<button class="result-row" data-result="${t}" data-archive-row="${e.id}">',
+  "检索行锚点",
+);
+
+/* 阅读器左上角的来源行：视频条目不该写 "ORIGINAL CURRICULUM VITAE"。
+ * 原来只有「PDF 第 N 页 / 原始简历」两种文案，视频落在后者的兜底上。 */
+js = must(
+  js,
+  'It.querySelector(".plate-origin").textContent=Mi.pageNumbers?.[Bi]?`ORIGINAL PORTFOLIO / PDF P.${Mi.pageNumbers[Bi]}`:"ORIGINAL CURRICULUM VITAE"',
+  'It.querySelector(".plate-origin").textContent=/\.mp4$/i.test(n[Bi]||"")?"AI FILM / 影像档案":(Mi.pageNumbers?.[Bi]?`ORIGINAL PORTFOLIO / PDF P.${Mi.pageNumbers[Bi]}`:"ORIGINAL CURRICULUM VITAE")',
+  "阅读器来源行（视频分支）",
+);
 
 /* 示例图接线：tools/media/pages.json 登记的多图**追加**到每条记录的 pages 后面。
  * 只追加磁盘上真实存在的文件 —— 图还没生成时跳过并计数，不让构建崩。 */
@@ -345,7 +365,7 @@ if (existsSync(profPath)) {
 {
   const credits = [
     "<h2>关于这份个人档案</h2>",
-    "<p>作品与个人信息：黄博弈 / BORV。内容来自本人提供的 CV 与作品集，图版按同一套版式重排。</p>",
+    "<p>作品与个人信息：黄博弈 / BORV。内容来自本人提供的简历与作品集，图版按同一套版式重排。</p>",
     "<p>本页的交互与三维场景基于 LBEILC / RhineLabUI 与 kirahook / KIRAHOOK-CV-Web 的 MIT 构建，",
     "保留原始版权声明；场景、相机、雾、景深与交互代码未作改动，仅替换身份与内容。</p>",
     "<p>字体 MiSans（小米）与 Rolling Number 依其各自许可使用，分片逐字节未改。",
@@ -355,17 +375,91 @@ if (existsSync(profPath)) {
   const before = js;
   js = js.replace(/<h2>关于这份个人档案<\/h2>[\s\S]*?<div class="credits-links">/, credits);
   if (js === before) fails.push("来源面板: 未命中");
-  js = js.replace(/展示内容来自所提供的 CV 与 90 页作品集。/g, "内容来自本人提供的 CV 与作品集。");
+  js = js.replace(/展示内容来自所提供的 CV 与 90 页作品集。/g, "内容来自本人提供的简历与作品集。");
+}
+
+/* ── 1c · 简历：中英两版下载 + 把「CV」称呼统一成「简历」（2026-11-02）──────
+ *
+ * 排序要求：必须排在下面 `documents/hu-xinyang-cv.pdf` 的全局路径改写**之前**，
+ * 否则下载链接里的原路径已经换成了内部名，这里的定点替换就再也对不上
+ * （与 1b 的视频通道同一个坑）。
+ *
+ * 为什么改成两条链接：简历有中文与英文两份，访客要能自己选；
+ * `download="…"` 显式给出落盘文件名，保证下载后叫原名，而不是 URL 里的内部名。
+ */
+{
+  const ZH_RESUME = "documents/黄博弈this_is_my_resume.pdf";
+  const EN_RESUME = "documents/My_name_is_Huangborv_EN.pdf";
+  const ZH_NAME = "黄博弈this_is_my_resume.pdf";
+  const EN_NAME = "My_name_is_Huangborv_EN.pdf";
+
+  /* 同一条「下载 CV ↓」在致谢弹层与履历面板各出现一次，两处都拆成两条 */
+  const CV_LINK = 'href="${ft("documents/hu-xinyang-cv.pdf")}" download>下载 CV ↓';
+  const RESUME_LINKS =
+    '<a href="${ft("' + ZH_RESUME + '")}" download="' + ZH_NAME + '">下载简历 · 中文 ↓</a>' +
+    '<a href="${ft("' + EN_RESUME + '")}" download="' + EN_NAME + '">简历 · English ↓</a>';
+  const linkCount = js.split(CV_LINK).length - 1;
+  if (linkCount !== 2) fails.push(`简历链接: 原文命中 ${linkCount} 处（期望 2）`);
+  else js = js.split(CV_LINK).join(RESUME_LINKS);
+
+  /* 履历面板头部那条单独的下载链接走 `nh()`（简历 URL 助手），把它指到中文版 */
+  js = must(
+    js,
+    'const nh=()=>ft("documents/hu-xinyang-cv.pdf")',
+    'const nh=()=>ft("documents/黄博弈this_is_my_resume.pdf")',
+    "简历 URL 助手",
+  );
+  js = must(js, "download>下载 CV ↓</a><button data-profile-close", "download>下载简历 ↓</a><button data-profile-close", "履历头部下载链接");
+
+  /* 逐处换称呼。「CV」是外来缩写，站内一律称「简历」。 */
+  const WORDS = [
+    ['aria-label="CV 与个人履历"', 'aria-label="简历与个人履历"'],
+    ["<b>CV</b><span>履历</span>", "<b>简历</b><span>履历</span>"],
+    ['"CV / SELECTED EXPERIENCE"', '"简历 / SELECTED EXPERIENCE"'],
+    ['"ORIGINAL CURRICULUM VITAE"', '"原始简历"'],
+    ["ORIGINAL CV", "原始简历"],
+    ["原始 CV", "原始简历"],
+    ["原 CV 未注明具体等级", "简历未注明具体等级"],
+    ["查看 CV 收录的论文", "查看简历收录的论文"],
+    ["参赛记录据个人 CV、", "参赛记录据个人简历、"],
+    ["学术服务经历据本人提供的 CV 整理", "学术服务经历据本人提供的简历整理"],
+    ["技能据个人 CV 整理", "技能据个人简历整理"],
+    ["内容按所附 CV 逐字转录", "内容按所附简历逐字转录"],
+    ["提供的 CV 整理", "提供的简历整理"],
+  ];
+  for (const [from, to] of WORDS) {
+    const n = js.split(from).length - 1;
+    if (n === 0) fails.push(`称呼: 未命中 "${from}"`);
+    else js = js.split(from).join(to);
+  }
+  /* 兜底：中日韩文字紧贴的 "CV" 一个都不许剩（`KIRAHOOK-CV-Web` 因两侧是字母不受影响）。
+   * 这条比逐条替换更可靠 —— 漏掉的写法在这里就红，不会带病上线。 */
+  const leftover = js.match(/[\u4e00-\u9fa5] ?CV|CV ?[\u4e00-\u9fa5]|"CV \/ /g) ?? [];
+  if (leftover.length) fails.push(`称呼: 仍有 ${leftover.length} 处 CV 未改（${[...new Set(leftover)].slice(0, 6).join(" / ")}）`);
 }
 
 /* 下载链接与音频：资料来源换成我们的文件；背景音乐属于对方版权，按钮一并去掉 */
-js = js.replace(/documents\/hu-xinyang-cv\.pdf/g, "documents/boryac-cv.pdf");
-js = js.replace(/documents\/hu-xinyang-cv-supplement-2026-10\.pdf/g, "documents/boryac-cv.pdf");
+js = js.replace(/documents\/hu-xinyang-cv\.pdf/g, "documents/黄博弈this_is_my_resume.pdf");
+js = js.replace(/documents\/hu-xinyang-cv-supplement-2026-10\.pdf/g, "documents/黄博弈this_is_my_resume.pdf");
 js = js.replace(/documents\/hu-xinyang-portfolio\.pdf/g, "documents/boryac-portfolio.pdf");
 js = js.replace('<button data-action="toggle-music"', '<button hidden data-action="toggle-music"');
 js = js.replace(/images\/contact-qr\.png/g, "portfolio/portrait.jpg");
 
-write("assets/index-rs_UJF4L.js", js);
+/* bundle 文件名带内容哈希。
+ * 为什么必须改名：文件名不变时，`/assets/` 的 7 天强缓存 + service worker
+ * 里 `assets/*-hash.js` 的 immutable 语义，会把旧 bundle 一直留在访客设备上 ——
+ * 文案改了，老访客永远看不到。改名 = 强制换代（sw.js 的 VERSION 也随之变化）。 */
+const jsHash = createHash("sha256").update(js).digest("hex").slice(0, 8);
+const JS_FILE = `assets/index-${jsHash}.js`;
+for (const name of readdirSyncSafe(path.join(ROOT, "assets"))) {
+  const rel = `assets/${name}`;
+  if (/^index-.*\.js$/.test(name) && rel !== JS_FILE) {
+    rmSync(path.join(ROOT, "assets", name), { force: true });
+    console.log(`[bundle] 移除旧产物 ${name}`);
+  }
+}
+write(JS_FILE, js);
+console.log(`[bundle] ${JS_FILE}（${(Buffer.byteLength(js) / 1024).toFixed(0)} KB）`);
 
 
 /* ── 2 · HTML ───────────────────────────────────────────────────────────── */
@@ -373,6 +467,8 @@ for (const rel of ["index.html", "latest.html", "update.html"]) {
   if (!existsSync(path.join(SRC, rel))) continue;
   let html = read(rel);
   if (html.includes(BASE_OLD)) html = html.split(BASE_OLD).join(BASE_NEW);
+  /* 入口 bundle 已按内容改名，这里同步改写引用（否则页面还是去要旧文件） */
+  html = html.replace(/\/assets\/index-[^"]+\.js/g, `/${JS_FILE}`);
   html = html.replace(/KIRAHOOK/g, BRAND).replace(/胡鑫洋/g, NAME);
   /* 描述统一改写一次：中文名替换会让原句出现"黄博弈 BORV 的胡鑫洋的…"这种叠词 */
   const DESC = "黄博弈 BORV 个人作品档案：AI 系统与检索、增长与商业化、工程实现。三维玻璃档案体验。";
@@ -392,7 +488,7 @@ write("assets/index-DY0MSdxT.css", css);
 const manifest = JSON.parse(read("manifest.webmanifest"));
 manifest.name = `${NAME} · ${BRAND} 个人作品档案`;
 manifest.short_name = BRAND;
-manifest.description = "个人 CV、AI 系统与检索、增长与商业化、工程实现的作品档案";
+manifest.description = "个人简历、AI 系统与检索、增长与商业化、工程实现的作品档案";
 write("manifest.webmanifest", JSON.stringify(manifest, null, 2) + "\n");
 
 /* ── 5 · favicon ────────────────────────────────────────────────────────── */

@@ -1,10 +1,10 @@
 #!/usr/bin/env node
 /**
- * 上线前隐私与密钥审计。三道独立口径，任一道命中即非 0：
- *   PASS-1 已知密钥/凭据模式（AK/SK、token、私钥、连接串、内网地址）
- *   PASS-2 本机绝对路径与内部代号（C:\Users、RHINE、KIRAHOOK、hu-xinyang、.src）
- *   PASS-3 个人信息与高熵串（手机号、身份证、银行卡、32+ 位随机串）
- * 只扫「会被发布」的文件（站点根下、排除 .src / tools / artifacts / node_modules）。
+ * 上线前隐私与密钥审计。三遍独立口径，任一遍命中即非 0：
+ *   PASS-1 已知密钥/凭据模式（AK/SK、token、私钥、连接串、内网地址）；
+ *   PASS-2 本机绝对路径与上游内部代号（C:\Users、RHINE、KIRAHOOK、hu-xinyang、.src）；
+ *   PASS-3 个人信息与高熵串（手机号、身份证、银行卡、32+ 位随机串）。
+ * 只扫「会被发布」的文件（站点根下，排除 .src / tools / artifacts / node_modules）。
  */
 import { readdirSync, readFileSync, statSync } from "node:fs";
 import path from "node:path";
@@ -36,8 +36,8 @@ const RULES = [
   ["PASS-1", "私钥块", /-----BEGIN [A-Z ]*PRIVATE KEY-----/g],
   ["PASS-1", "带凭据连接串", /(?:mysql|postgres|mongodb|redis):\/\/[^\s"']+:[^\s"']+@/gi],
   ["PASS-1", "内网/回环地址", /\b(?:10\.\d{1,3}|192\.168|172\.(?:1[6-9]|2\d|3[01]))\.\d{1,3}\.\d{1,3}\b/g],
-  ["PASS-2", "本机绝对路径", /[A-Za-z]:\\\\?Users\\\\?[^\s"'<>]+/g],
-  ["PASS-2", "上游代號", /\b(?:RHINE[-_ ]?LAB|KIRAHOOK|hu-xinyang|HU XINYANG|胡鑫洋)\b/gi],
+  ["PASS-2", "本机绝对路径", /[A-Za-z]:[\\/]Users[\\/][^\s"'<>]+/g],
+  ["PASS-2", "上游代號", /\b(?:RHINE[-_ ]?LAB|KIRAHOOK|hu-xinyang|HU XINYANG|胡鑫洋)\b/g],
   ["PASS-2", "构建内部目录", /\b(?:\.src\/|tools\/|artifacts\/)/g],
   ["PASS-3", "手机号", /(?<!\d)1[3-9]\d{9}(?!\d)/g],
   ["PASS-3", "身份证", /(?<!\d)\d{17}[\dXx](?!\d)/g],
@@ -51,7 +51,6 @@ const ALLOW = [
 ];
 const ALLOW_FILES = new Set([
   "pwa-build.json", // 含 build 版本 sha1 与文件清单
-  "assets/index-rs_UJF4L.js", // 压缩产物里含 sha/哈希类字符串
   "sw.js",
   "manifest.webmanifest",
   "licenses/kirahook-cv-web-mit.txt", // MIT 原文里必须保留上游名称
@@ -59,6 +58,10 @@ const ALLOW_FILES = new Set([
   "README.md",
   "media/README.md",
 ]);
+/* 入口 bundle 现在按内容哈希改名（index-<sha8>.js），文件名不再固定；
+ * 压缩产物里既有哈希类字符串，也有 MIT 署名要求保留的上游代号，故按模式豁免。 */
+const ALLOW_PATTERNS = [/^assets\/index-[^/]+\.js$/];
+const isAllowedFile = (rel) => ALLOW_FILES.has(rel) || ALLOW_PATTERNS.some((re) => re.test(rel));
 
 const ONLY = (process.argv.find((a) => a.startsWith("--only=")) ?? "").split("=")[1] ?? "";
 const hits = [];
@@ -76,12 +79,12 @@ for (const f of textFiles) {
     const found = text.match(re);
     if (!found) continue;
     for (const m of [...new Set(found)].slice(0, 5)) {
-      if (pass === "PASS-3" && label === "高熵串" && ALLOW_FILES.has(f.rel)) continue;
+      if (pass === "PASS-3" && label === "高熵串" && isAllowedFile(f.rel)) continue;
       if (pass === "PASS-3" && label === "高熵串") {
         // 纯小写 + 连字符的串是属性名/类名，不是密钥
         if (!/[A-Z]/.test(m) || !/[0-9]/.test(m)) continue;
       }
-      if (label === "上游代號" && ALLOW_FILES.has(f.rel)) continue;
+      if (label === "上游代號" && isAllowedFile(f.rel)) continue;
       hits.push({ pass, label, file: f.rel, sample: String(m).slice(0, 80) });
     }
   }

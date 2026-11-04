@@ -28,7 +28,7 @@ node tools/make.mjs
 
 ## 数据
 
-`tools/archives-d/X-001.json … X-018.json`：一条档案一个文件，便于并行改写。
+`tools/archives-d/X-001.json … X-019.json`：一条档案一个文件，便于并行改写。
 字段含摘要、6 条发现、五段研究、方法与产出、技术栈。
 
 `tools/media/README.md` 约定示例图命名：`media/<id>/NN.jpg`，2000×1250。

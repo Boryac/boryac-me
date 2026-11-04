@@ -1,4 +1,4 @@
-import pw from "file:///<LOCAL_PATH>";
+import pw from "file:///C:/Users/22334/Downloads/%E6%AF%95%E8%AE%BE/Project_Habitat_Codex_Kit/node_modules/playwright-core/index.js";
 import path from "node:path";
 const { chromium } = pw;
 const ROOT = path.resolve(process.cwd());

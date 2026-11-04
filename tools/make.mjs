@@ -2,7 +2,9 @@
 /**
  * 一条命令跑完整构建（顺序即依赖关系），任一步失败立即退出非 0。
  *
- *   python tools/plates.py   先出图版 / 卡片图集 / 作品集 PDF（依赖 tools/archives-d）
+ *   node   tools/media/shell.mjs  6 张后台界面截图（01 号图，需 Chrome）
+ *   node   tools/media/gen.mjs    其余构造示意图（需 Chrome）
+ *   python tools/plates.py        出图版 / 卡片图集 / 作品集 PDF（依赖 tools/archives-d 与 media）
  *   node   tools/build.mjs   换根路径 / 品牌 / 数据集 / CV 面板 / 注入视频通道与 CSS
  *   node   tools/assets.mjs  换 PDF、生成 archives、删私产、重算 sw 清单
  *   node   tools/fonts.mjs   字体瘦身 + 裁剪 @font-face
@@ -24,6 +26,13 @@ const addIf = (label, script, cmd, args) => {
   if (existsSync(path.join(ROOT, script))) add(label, cmd, args);
 };
 
+/*
+ * 示例图在 plates 之前生成，原因：plates.py 会按 media/<id>/01.jpg 自动发现首图，
+ * 图没落盘就会退回大编号占位。shell.mjs 负责 6 张后台界面（01 号），
+ * gen.mjs 负责其余构造图（02 号及其它档案的 01 号）—— 两者写不同文件，不会互相覆盖。
+ */
+addIf("media:shell", "tools/media/shell.mjs", process.execPath, ["tools/media/shell.mjs"]);
+addIf("media:gen", "tools/media/gen.mjs", process.execPath, ["tools/media/gen.mjs"]);
 add("plates", PY, ["tools/plates.py"]);
 add("build", process.execPath, ["tools/build.mjs"]);
 add("assets#1", process.execPath, ["tools/assets.mjs"]);
@@ -66,8 +75,15 @@ const catalogue = JSON.parse(readFileSync(path.join(ROOT, "tools", "categories.j
 const total = catalogue.reduce((a, c) => a + (c.count ?? 0), 0);
 checks.push([`栏目 count 合计 = ${total}`, total > 0]);
 checks.push(["sw.js 未预缓存 videos/", !/videos\//.test(files.split("const FILES")[1]?.split(";")[0] ?? "")]);
-for (const f of ["index.html", "assets/index-rs_UJF4L.js", "assets/index-DY0MSdxT.css"]) {
+/* 入口 bundle 现在按内容哈希改名，所以从 index.html 里反查实际引用 */
+const entryJs = (readFileSync(path.join(ROOT, "index.html"), "utf8").match(/\/assets\/(index-[^"]+\.js)/) ?? [])[1];
+const entryPath = entryJs ? `assets/${entryJs}` : "assets/__entry_missing__.js";
+for (const f of ["index.html", entryPath, "assets/index-DY0MSdxT.css"]) {
   checks.push([`${f} 存在`, existsSync(path.join(ROOT, f))]);
+}
+const resumeNames = ["黄博弈this_is_my_resume.pdf", "My_name_is_Huangborv_EN.pdf"];
+for (const name of resumeNames) {
+  checks.push([`documents/${name} 存在`, existsSync(path.join(ROOT, "documents", name))]);
 }
 
 console.log("\n── 构建后自检 ──");

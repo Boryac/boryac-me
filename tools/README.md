@@ -24,7 +24,7 @@
 ```
 .src/            参考站构建的**原始快照**（首次运行时自动生成，构建永远从它出发）
 tools/           构建与部署脚本（不随站点发布）
-  plates.py      生成 portfolio/page-01..12.jpg、portrait.jpg、三维卡片纹理图集、作品集 PDF
+  plates.py      生成 portfolio/page-01..19.jpg、portrait.jpg、三维卡片纹理图集、作品集 PDF
   build.mjs      换部署根路径 / 换品牌 / 换数据集 / 换 CV 面板 / 清洗私产引用
   assets.mjs     换 PDF、生成 archives 文本、删对方资产目录、重算 service worker 清单、保留 MIT 许可
   fonts.mjs      字体瘦身（761 分片 → 100 片，只在用到的范围内）、同步裁剪 @font-face
@@ -58,14 +58,14 @@ node   tools/perf.mjs      # 首屏：内联瘦身后的 CSS、字体预载、SW
 ## 数据与媒体
 
 ```
-tools/archives-d/X-001.json … X-018.json   每条档案一个文件（并行改写不冲突）
+tools/archives-d/X-001.json … X-019.json   每条档案一个文件（并行改写不冲突）
 tools/lib/load-archives.mjs                读目录、按文件名排序；缺目录时回落单文件
-videos/x017.mp4 x018.mp4                   全片 720p H.264（4.26 / 2.36 MB），禁原码率
+videos/x018.mp4 x019.mp4                   全片 720p H.264（4.26 / 2.36 MB），禁原码率
 videos/*-poster.jpg                        播放器海报（1280×720）
 videos/*-tile.jpg                          三维卡片切片（2000×708 = 2.82:1）
 ```
 
-`node tools/video.mjs` 从桌面源片重新转码（幂等，`--force` / `--only=x017`）；
+`node tools/video.mjs` 从桌面源片重新转码（幂等，`--force` / `--only=x018`）；
 ffmpeg 静态包解压在 `tools/bin/`，不进仓库发布。
 
 ## 许可与合规（必读）

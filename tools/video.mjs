@@ -25,7 +25,7 @@ const ONLY = (process.argv.find((a) => a.startsWith("--only=")) ?? "").split("="
 const JOBS = [
   {
     id: "x017",
-    src: "<LOCAL_PATH>",
+    src: "C:/Users/22334/Desktop/ziran.mp4",
     maxMB: 4.5,
     rate: "800k",
     expectSec: 40.01,
@@ -33,7 +33,7 @@ const JOBS = [
   },
   {
     id: "x018",
-    src: "<LOCAL_PATH>",
+    src: "C:/Users/22334/Desktop/renwuzhanshi.mp4",
     maxMB: 2.5,
     rate: "900k",
     expectSec: 20.33,

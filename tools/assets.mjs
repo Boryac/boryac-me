@@ -4,7 +4,7 @@
  *
  * 做的四件事：
  *   1. `documents/` 换成我们的 PDF（CV + 作品集），删掉对方的申请表/专利/作品集；
- *   2. `archives/` 换成按数据集生成的 12 份原始档案文本（对方是 22 份 RHINE-LAB）；
+ *   2. `archives/` 换成按数据集生成的原始档案文本，一条记录一份（对方是 22 份 RHINE-LAB）；
  *   3. 删掉只属于对方的目录：brands / evidence / papers / exhibitions / conferences / audio；
  *   4. 按**实际文件清单**重生成 `sw.js` 的预缓存列表与 `pwa-build.json` 的版本号 ——
  *      清单不重算的话，service worker 会去预缓存已经不存在的文件，首屏直接白。
@@ -26,12 +26,20 @@ const fails = [];
 const docsDir = path.join(ROOT, "documents");
 rmSync(docsDir, { recursive: true, force: true });
 mkdirSync(docsDir, { recursive: true });
-const cvSrc = path.join(OUTER, "Project_Habitat_Codex_Kit", "public", "resume", "resume.pdf");
-if (!existsSync(cvSrc)) fails.push("documents: 找不到源 CV（public/resume/resume.pdf）");
-else copyFileSync(cvSrc, path.join(docsDir, "boryac-cv.pdf"));
+/* 简历两份：中文 / 英文。文件名**直接沿用用户给的称呼**，因为 `download`
+ * 属性与 URL 末段都会成为落盘名 —— 换成 boryac-cv.pdf 之类的内部名，
+ * 访客下载下来就对不上原名了。
+ * 源文件在 tools/resume/（不入站，只作构建输入，逐字节复制）。 */
+const RESUME_FILES = ["黄博弈this_is_my_resume.pdf", "My_name_is_Huangborv_EN.pdf"];
+const resumeSrcDir = path.join(ROOT, "tools", "resume");
+for (const name of RESUME_FILES) {
+  const from = path.join(resumeSrcDir, name);
+  if (!existsSync(from)) fails.push(`documents: 找不到简历源 tools/resume/${name}`);
+  else { copyFileSync(from, path.join(docsDir, name)); console.log(`[docs] ${name}`); }
+}
 const folioSrc = path.join(ROOT, "tools", "boryac-portfolio.pdf");
 if (!existsSync(folioSrc)) fails.push("documents: 找不到作品集 PDF（先跑 tools/plates.py）");
-else { copyFileSync(folioSrc, path.join(docsDir, "boryac-portfolio.pdf")); console.log("[docs] boryac-cv.pdf + boryac-portfolio.pdf"); }
+else { copyFileSync(folioSrc, path.join(docsDir, "boryac-portfolio.pdf")); console.log("[docs] boryac-portfolio.pdf"); }
 
 /* ── 2 · archives 文本 ──────────────────────────────────────────────────── */
 const archDir = path.join(ROOT, "archives");
@@ -69,7 +77,7 @@ for (const r of RECORDS) {
     r.contentNote,
     "",
     `原始文档：${r.document}`,
-    "来源：黄博弈提供的 CV 与作品集。",
+    "来源：黄博弈提供的简历与作品集。",
   ].join("\n");
   writeFileSync(path.join(archDir, `BORV-${r.id}.txt`), strip(body) + "\n");
 }
@@ -172,6 +180,9 @@ const runtimeBlock = `${RUNTIME_MARK}
 const RUNTIME_CACHE = PREFIX + "runtime-v1";
 const isVideo = (p) => p.startsWith("/videos/");
 const isDoc = (p) => p.startsWith("/documents/") || p.toLowerCase().endsWith(".pdf");
+/* 简历 PDF 不进任何缓存：它们由 nginx 的 auth_request 按「IP + 设备」每日限额放行，
+ * 命中缓存就等于绕过配额，而且会让访客一直看到旧版简历。 */
+const isResume = (p) => /(?:My_name_is_Huangborv_EN|黄博弈this_is_my_resume)\.pdf$/.test(p);
 const isAsset = (p) =>
   /\.(png|jpe?g|webp|avif|gif|svg|glb|gltf|bin|ktx2|woff2?)$/i.test(p);
 async function runtimeCacheFirst(request, key) {
@@ -209,11 +220,13 @@ else {
       allowedAnchor,
       "const key=navigation?index:url.href;" +
         "if(!allowed.has(key)){" +
+        "if(isResume(url.pathname))return;" +
         "if(isVideo(url.pathname))return;" +
         "if(isDoc(url.pathname)){event.respondWith(runtimeSwr(event.request,key));return;}" +
         "if(isAsset(url.pathname)){event.respondWith(runtimeCacheFirst(event.request,key));return;}" +
         "return;}",
     );
+    if (!nextSw.includes("if(isResume(url.pathname))return;")) fails.push("sw.js: 简历不缓存分支未写入");
     if (!nextSw.includes("if(isVideo(url.pathname))return;")) fails.push("sw.js: runtime 分级未写入");
   }
 }

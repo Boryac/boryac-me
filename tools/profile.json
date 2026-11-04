@@ -14,7 +14,11 @@
       ],
       "image": "portfolio/portrait.jpg",
       "project": null,
-      "meta": ["AI", "BD", "2027 届"]
+      "meta": [
+        "AI",
+        "BD",
+        "2027 届"
+      ]
     },
     {
       "label": "EDUCATION",
@@ -28,7 +32,7 @@
         "年承接校级活动十余场，最高单场覆盖 2000 人次以上",
         "在校获评校级优秀干部"
       ],
-      "image": "portfolio/page-10.jpg",
+      "image": "portfolio/page-11.jpg",
       "project": null
     },
     {
@@ -43,7 +47,7 @@
         "站点：Boryac.github.io",
         "协作方式：可远程，也可按机会迁移"
       ],
-      "image": "portfolio/page-02.jpg",
+      "image": "portfolio/page-03.jpg",
       "project": null,
       "showPoints": true
     },
@@ -61,13 +65,17 @@
         "运营工具：CRM、飞书 / 钉钉 / 企业微信、SEO / SEM 与私域社群",
         "语言：中文写作与汇报，英文可读技术文档与接口规范，邮件往来可用"
       ],
-      "image": "portfolio/page-03.jpg",
+      "image": "portfolio/page-04.jpg",
       "project": null,
       "showPoints": true,
-      "meta": ["检索", "增长", "工程", "数据"]
+      "meta": [
+        "检索",
+        "增长",
+        "工程",
+        "数据"
+      ]
     }
   ],
-
   "internships": [
     {
       "label": "KULU BD",
@@ -81,10 +89,13 @@
         "用 RICE 给需求排序，配日清看板走完收集、评审、交付、验效四步",
         "旺季订单处理时效 6 小时压到 2 小时，GMV 超额完成 27%"
       ],
-      "image": "portfolio/page-05.jpg",
-      "project": "X-005",
+      "image": "portfolio/page-06.jpg",
+      "project": "X-006",
       "showPoints": true,
-      "meta": ["在线旅游", "流程改造"]
+      "meta": [
+        "在线旅游",
+        "流程改造"
+      ]
     },
     {
       "label": "CEWE SAAS",
@@ -98,10 +109,13 @@
         "输出官网、小程序、社媒三端流量闭环，配合 SEO 与 SEM 投放",
         "首月 KPI 完成 120% 以上，触达至签约的周期从 20 天缩到 12 天"
       ],
-      "image": "portfolio/page-06.jpg",
-      "project": "X-006",
+      "image": "portfolio/page-07.jpg",
+      "project": "X-007",
       "showPoints": true,
-      "meta": ["SaaS", "线索分层"]
+      "meta": [
+        "SaaS",
+        "线索分层"
+      ]
     },
     {
       "label": "LUOSHAN BD",
@@ -115,13 +129,15 @@
         "按消费数据调整核销点位，关键商户客流提升 40%，客诉率控制在 1.2%",
         "三个月线下消费 GMV 48 万以上，沉淀 6 个 500 人规模的私域社群"
       ],
-      "image": "portfolio/page-04.jpg",
+      "image": "portfolio/page-05.jpg",
       "project": null,
       "showPoints": true,
-      "meta": ["本地生活", "私域"]
+      "meta": [
+        "本地生活",
+        "私域"
+      ]
     }
   ],
-
   "competitions": [
     {
       "label": "HONOR",
@@ -134,12 +150,14 @@
         "年承接校级活动十余场，最高单场覆盖 2000 人次以上",
         "活动结束后留物料与话术模板给下一届，减少交接损耗"
       ],
-      "image": "portfolio/page-09.jpg",
+      "image": "portfolio/page-10.jpg",
       "project": null,
-      "meta": ["校园", "组织"]
+      "meta": [
+        "校园",
+        "组织"
+      ]
     }
   ],
-
   "exhibitions": [
     {
       "label": "LAUNCH",
@@ -153,10 +171,13 @@
         "WebGL 不可用时回落到 HTML 工牌，正文始终是语义 HTML",
         "尊重系统的减少动态效果，键盘可完成摆动、翻面与重播"
       ],
-      "image": "portfolio/page-07.jpg",
-      "project": "X-007",
+      "image": "portfolio/page-08.jpg",
+      "project": "X-008",
       "showPoints": true,
-      "meta": ["前端", "动效"]
+      "meta": [
+        "前端",
+        "动效"
+      ]
     },
     {
       "label": "ON CAMPUS",
@@ -170,10 +191,13 @@
         "开学与毕业两季各做一轮完整运营，地推与线上推广交替进行",
         "担保流程把确认收货与放款绑在一起，描述不符的纠纷明显减少"
       ],
-      "image": "portfolio/page-08.jpg",
-      "project": "X-008",
+      "image": "portfolio/page-09.jpg",
+      "project": "X-009",
       "showPoints": true,
-      "meta": ["交易流程", "校园"]
+      "meta": [
+        "交易流程",
+        "校园"
+      ]
     },
     {
       "label": "SERIAL",
@@ -187,13 +211,15 @@
         "每篇固定场景、做法、清单三段，被转发时单段也读得懂",
         "单篇最高阅读 3.2 万"
       ],
-      "image": "portfolio/page-11.jpg",
-      "project": "X-011",
+      "image": "portfolio/page-12.jpg",
+      "project": "X-012",
       "showPoints": true,
-      "meta": ["内容", "运营"]
+      "meta": [
+        "内容",
+        "运营"
+      ]
     }
   ],
-
   "academic": [
     {
       "label": "EVAL SET",
@@ -210,7 +236,10 @@
       "image": "portfolio/page-01.jpg",
       "project": "X-001",
       "showPoints": true,
-      "meta": ["离线评测", "检索"]
+      "meta": [
+        "离线评测",
+        "检索"
+      ]
     },
     {
       "label": "BASELINE",
@@ -224,12 +253,14 @@
         "每类只配一套整改动作，先改一处，避免建议过多被直接放弃",
         "方法后来复制到另外两个县域，成为月度常规动作"
       ],
-      "image": "portfolio/page-12.jpg",
-      "project": "X-012",
+      "image": "portfolio/page-13.jpg",
+      "project": "X-013",
       "showPoints": true,
-      "meta": ["田野走访", "基线口径"]
+      "meta": [
+        "田野走访",
+        "基线口径"
+      ]
     }
   ],
-
   "patents": []
 }
